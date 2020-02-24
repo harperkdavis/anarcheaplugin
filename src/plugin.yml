@@ -1,5 +1,5 @@
 name: Anarchea
-version: v0.1
+version: 0.1
 author: Harper Davis & Nathan Merill
-main: main.java.anarchea.io.github.harperkdavis.Anarchea
+main: main.java.io.github.anarchea.Anarchea
 website: harperkdavis.github.io
