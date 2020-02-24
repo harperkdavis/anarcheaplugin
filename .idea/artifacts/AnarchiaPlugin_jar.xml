@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="AnarchiaPlugin:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/AnarchiaPlugin_jar</output-path>
+    <root id="archive" name="AnarchiaPlugin.jar">
+      <element id="module-output" name="AnarchiaPlugin" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../Spigot/spigot-1.15.2.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
