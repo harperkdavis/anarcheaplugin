@@ -3,3 +3,7 @@ version: 0.1
 author: Harper Davis & Nathan Merill
 main: main.java.io.github.anarchea.Anarchea
 website: harperkdavis.github.io
+commands:
+  shop:
+    description: Opens the shop menu
+    usage: /shop
