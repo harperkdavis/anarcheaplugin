@@ -19,4 +19,12 @@ public class ItemMetaStack {
         return i;
     }
 
+    public static String getItemName(ItemStack is) {
+        if (is.getItemMeta().getDisplayName().equals("")) {
+            return is.getType().name();
+        } else {
+            return is.getItemMeta().getDisplayName();
+        }
+    }
+
 }

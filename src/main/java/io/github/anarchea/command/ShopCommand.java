@@ -40,6 +40,7 @@ public class ShopCommand implements CommandExecutor {
 
             player.openInventory(gui);
 
+            return true;
         }
 
         return false;

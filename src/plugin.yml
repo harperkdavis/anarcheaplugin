@@ -2,8 +2,15 @@ name: Anarchea
 version: 0.1
 author: Harper Davis & Nathan Merill
 main: main.java.io.github.anarchea.Anarchea
+api-version: 1.13
 website: harperkdavis.github.io
 commands:
   shop:
     description: Opens the shop menu
     usage: /shop
+  shopadd:
+    description: Add item to the shop
+    usage: /shopadd
+  coins:
+      description: Get coin balance
+      usage: /coins or /c
