@@ -1,5 +1,6 @@
 package main.java.io.github.anarchea.command.eco;
 
+import main.java.io.github.anarchea.utils.ShopConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -23,7 +24,7 @@ public class PayCommand implements CommandExecutor {
             Player player = (Player) sender;
             if (args.length == 2) {
 
-                double coins = plugin.getConfig().getDouble("playerData." + player.getUniqueId() + ".coins");
+                double coins = ShopConfig.getCoins(plugin, player);
 
                 Player recievingPlayer = Bukkit.getPlayer(args[0]);
 
@@ -32,11 +33,13 @@ public class PayCommand implements CommandExecutor {
                         double recievingCoins = plugin.getConfig().getDouble("playerData." + recievingPlayer.getUniqueId() + ".coins");
                         int coinsToPay = Integer.parseInt(args[1]);
                         if (coinsToPay < coins) {
-                            plugin.getConfig().set("playerData." + player.getUniqueId() + ".coins", coins - coinsToPay);
-                            plugin.getConfig().set("playerData." + recievingPlayer.getUniqueId() + ".coins", recievingCoins + coinsToPay);
+                            ShopConfig.setCoins(plugin, player,  coins - coinsToPay);
+                            ShopConfig.setCoins(plugin, recievingPlayer, recievingCoins + coinsToPay);
 
                             player.sendMessage(ChatColor.GREEN + "You have paid " + ChatColor.GOLD + coinsToPay + " coins" + ChatColor.GREEN + " to " + recievingPlayer.getName());
                             recievingPlayer.sendMessage(ChatColor.GREEN + "You have been paid " + ChatColor.GOLD + coinsToPay + " coins" + ChatColor.GREEN + " from " + player.getName());
+
+                            plugin.saveConfig();
                         }
                     } else {
                         player.sendMessage(ChatColor.RED + "Invalid Player!");

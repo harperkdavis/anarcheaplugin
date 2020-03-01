@@ -29,7 +29,7 @@ public class ShopGUI implements Listener {
 
         if (playerInventories.get(player) != null) {
             if (e.getInventory() == playerInventories.get(player).gui) {
-                playerInventories.get(player).registerClick(e.getInventory(), e.getSlot(), e.getClick());
+                playerInventories.get(player).registerClick(e.getInventory(), e.getRawSlot(), e.getCurrentItem(), e.getClick());
                 e.setCancelled(true);
             }
         }

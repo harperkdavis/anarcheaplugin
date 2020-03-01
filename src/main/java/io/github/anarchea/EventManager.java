@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.vehicle.VehicleCreateEvent;
@@ -17,7 +18,7 @@ public class EventManager implements Listener {
 
     private JavaPlugin plugin;
 
-    EventManager (JavaPlugin plugin) {
+    EventManager(JavaPlugin plugin) {
         this.plugin = plugin;
     }
 
@@ -53,11 +54,12 @@ public class EventManager implements Listener {
 
             minecart.setMaxSpeed(32);
         }
-        if (e.getVehicle() instanceof Boat) {
-            Boat boat = (Boat) e.getVehicle();
-            boat.setMaxSpeed(32);
-        }
 
+    }
+
+    @EventHandler
+    public void playerGetXp(PlayerExpChangeEvent e) {
+        e.setAmount((int) (e.getAmount() * 1.5));
     }
 
 

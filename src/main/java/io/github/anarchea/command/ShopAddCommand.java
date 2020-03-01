@@ -26,7 +26,10 @@ public class ShopAddCommand implements CommandExecutor {
                 if (player.isOp()) {
                     ItemStack item = player.getInventory().getItemInMainHand();
                     if (item.getType() != Material.AIR) {
-                        plugin.getConfig().set("shopItems.Test", item);
+                        String itemId = "ITEM_" + ("" + Math.random()).substring(2);
+                        plugin.getConfig().set("shopItems." + itemId + ".price.buy", Double.parseDouble(args[0]));
+                        plugin.getConfig().set("shopItems." + itemId + ".price.sell", Double.parseDouble(args[1]));
+                        plugin.getConfig().set("shopItems." + itemId + ".item", item);
                         plugin.saveConfig();
                         return true;
                     } else {

@@ -1,5 +1,6 @@
 package main.java.io.github.anarchea.command.eco;
 
+import main.java.io.github.anarchea.utils.ShopConfig;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -23,7 +24,7 @@ public class CoinsCommand implements CommandExecutor {
         if (sender instanceof Player) {
             Player player = (Player) sender;
 
-            double coins = plugin.getConfig().getDouble("playerData." + player.getUniqueId() + ".coins");
+            double coins = ShopConfig.getCoins(plugin, player);
 
             player.sendMessage(ChatColor.WHITE + "Your balance: " + ChatColor.GOLD + (coins + " coins"));
             return true;

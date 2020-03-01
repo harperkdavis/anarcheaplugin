@@ -20,11 +20,32 @@ public class ItemMetaStack {
     }
 
     public static String getItemName(ItemStack is) {
+        is = is.clone();
         if (is.getItemMeta().getDisplayName().equals("")) {
-            return is.getType().name();
+            return toTitleCase(is.getType().name().toLowerCase());
         } else {
             return is.getItemMeta().getDisplayName();
         }
+    }
+
+    public static String toTitleCase(String input) { // Thanks, Stackoverflow!
+        StringBuilder titleCase = new StringBuilder(input.length());
+        boolean nextTitleCase = true;
+
+        input = input.replaceAll("_", " ");
+
+        for (char c : input.toCharArray()) {
+            if (Character.isSpaceChar(c)) {
+                nextTitleCase = true;
+            } else if (nextTitleCase) {
+                c = Character.toTitleCase(c);
+                nextTitleCase = false;
+            }
+
+            titleCase.append(c);
+        }
+
+        return titleCase.toString();
     }
 
 }

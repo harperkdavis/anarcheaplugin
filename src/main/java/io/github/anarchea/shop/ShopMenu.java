@@ -23,12 +23,12 @@ public class ShopMenu {
     private int deliveryTicks;
     private List<ItemStack> orderList = new ArrayList<>();
 
-    public ShopMenu (JavaPlugin plugin, Inventory gui, Player player) {
+    public ShopMenu(JavaPlugin plugin, Inventory gui, Player player) {
         this.gui = gui;
         this.player = player;
         this.plugin = plugin;
         deliveryTicks = (int) Math.sqrt((player.getLocation().getBlockX() * player.getLocation().getBlockX()) + (player.getLocation().getBlockZ() * player.getLocation().getBlockZ()));
-        deliveryTicks *= 3;
+        deliveryTicks *= 2;
         refreshShopMenu(0);
     }
 
@@ -41,7 +41,7 @@ public class ShopMenu {
         // Close
         this.gui.setItem(47, ItemMetaStack.createItemStack(Material.BLACK_STAINED_GLASS_PANE, 1, ChatColor.BLACK + " ", null));
         // Coin Balance
-        double coinBalance = plugin.getConfig().getDouble("playerData." + player.getUniqueId() + ".coins");
+        double coinBalance = ShopConfig.getCoins(plugin, player);
         this.gui.setItem(48, ItemMetaStack.createItemStack(Material.SUNFLOWER, 1, ChatColor.GOLD + ("Wallet: " + coinBalance + " coins"), null));
 
         // Order
@@ -51,7 +51,7 @@ public class ShopMenu {
 
         lore.add(ChatColor.GRAY + "Delivery time: ");
 
-        String deliveryTime = ((int)Math.floor(((float)deliveryTicks / 20) / 60) + "m" + (deliveryTicks/20)%60 + "s");
+        String deliveryTime = ((int) Math.floor(((float) deliveryTicks / 20) / 60) + "m" + (deliveryTicks / 20) % 60 + "s");
 
         lore.add(ChatColor.YELLOW + deliveryTime);
 
@@ -88,23 +88,15 @@ public class ShopMenu {
 
     }
 
-    private void Buy() {
-
-    }
 
     private boolean canOrderDelivery() {
-        double totalPrice = 0;
-        for (ItemStack is : orderList) {
-            totalPrice += plugin.getConfig().getDouble(ShopConfig.getConfigItemStack(plugin, is) + ".price.buy");
-        }
-        totalPrice += 10;
-        return !(totalPrice > plugin.getConfig().getDouble("playerData." + player.getUniqueId() + ".coins"));
+        return !(totalOrderPrice() > plugin.getConfig().getDouble("playerData." + player.getUniqueId() + ".coins"));
     }
 
     private double totalOrderPrice() {
         double totalPrice = 0;
         for (ItemStack is : orderList) {
-            totalPrice += plugin.getConfig().getDouble(ShopConfig.getConfigItemStack(plugin, is) + ".price.buy");
+            totalPrice += plugin.getConfig().getDouble(ShopConfig.getConfigItemStack(plugin, is) + ".price.buy") * is.getAmount();
         }
         totalPrice += 10;
         return totalPrice;
@@ -117,9 +109,8 @@ public class ShopMenu {
 
         for (String k : itemKeys) {
 
-            ItemStack is = (ItemStack) plugin.getConfig().get("shopItems." + k + ".item");
-            if (is != null) {
-
+            if (plugin.getConfig().get("shopItems." + k + ".item") != null) {
+                ItemStack is = ((ItemStack) plugin.getConfig().get("shopItems." + k + ".item")).clone();
                 is.setAmount(1);
                 if (includePrices) {
 
@@ -136,12 +127,14 @@ public class ShopMenu {
 
                 }
                 items.add(is);
+            } else {
+                Bukkit.broadcastMessage(ChatColor.RED + "Invalid item! @shopItems." + k + ".item");
             }
         }
         return items;
     }
 
-    private void refreshShopMenu (int page) {
+    private void refreshShopMenu(int page) {
         gui.clear();
         List<ItemStack> items = getAllItems(true);
         for (int i = 45 * page; i < Math.min(getAllItems(true).size(), 45 + 45 * page); i++) {
@@ -154,8 +147,13 @@ public class ShopMenu {
         return gui;
     }
 
-    void registerClick(Inventory inv, int slot, ClickType ct) {
-        Bukkit.getServer().broadcastMessage(ChatColor.GREEN + (inv + " : ") + ChatColor.BLUE + (slot + " : ") + ChatColor.RED + ct.name());
+    private void addToOrder(ItemStack is, int amount) {
+        is = is.clone();
+        is.setAmount(amount);
+        orderList.add(is);
+    }
+
+    void registerClick(Inventory inv, int slot, ItemStack clicked, ClickType ct) {
         if (slot <= 44) {
             if (page * 45 + slot >= getAllItems(false).size()) {
                 return;
@@ -167,14 +165,18 @@ public class ShopMenu {
             }
 
             ItemStack orderedItem = getAllItems(false).get(page * 45 + slot).clone();
-            if (ct.isLeftClick()) {
+            if (ct.isRightClick()) {
+                addToOrder(orderedItem,orderedItem.getMaxStackSize());
+                orderedItem.setAmount(orderedItem.getMaxStackSize());
+            } else if (ct.isLeftClick() && !ct.isShiftClick()){
+                addToOrder(orderedItem, 1);
                 orderedItem.setAmount(1);
             } else {
-                orderedItem.setAmount(orderedItem.getMaxStackSize());
+                addToOrder(orderedItem, Math.max(orderedItem.getMaxStackSize() / 2, 1));
+                orderedItem.setAmount(Math.max(orderedItem.getMaxStackSize() / 2, 1));
             }
 
-            player.sendMessage(ChatColor.WHITE + ItemMetaStack.getItemName(orderedItem) + ChatColor.WHITE + " (x" + orderedItem.getAmount() +")" + ChatColor.GREEN + " was added to your Order");
-            orderList.add(orderedItem);
+            player.sendMessage(ChatColor.WHITE + ItemMetaStack.getItemName(orderedItem.clone()) + ChatColor.WHITE + " (x" + orderedItem.clone().getAmount() + ")" + ChatColor.GREEN + " was added to your Order");
         } else if (slot == 45) { // Previous Page
             if (page == 0) {
                 page = getAllItems(false).size() / 45;
@@ -182,21 +184,43 @@ public class ShopMenu {
                 page--;
             }
         } else if (slot == 49) { // Order Delivery
-            if(canOrderDelivery()) {
+            if (canOrderDelivery()) {
                 player.closeInventory();
-                new Delivery(orderList, player.getEyeLocation(), player).runTaskLater(plugin, 20);
+                new Delivery(orderList, player.getEyeLocation(), player).runTaskLater(plugin, deliveryTicks);
             } else {
                 player.sendMessage(ChatColor.RED + "Not enough coins!");
             }
         } else if (slot == 50) { // Remove Last Item
             if (orderList.size() > 0) {
-                ItemStack removed = orderList.remove(orderList.size()-1);
-                player.sendMessage(ChatColor.WHITE + ItemMetaStack.getItemName(removed) + ChatColor.GRAY + " (x" + removed.getAmount() +")" + ChatColor.RED + " was removed from your order");
+                ItemStack removed = orderList.remove(orderList.size() - 1);
+                player.sendMessage(ChatColor.WHITE + ItemMetaStack.getItemName(removed) + ChatColor.GRAY + " (x" + removed.getAmount() + ")" + ChatColor.RED + " was removed from your order");
             }
         } else if (slot == 53) { // Next Page
-            page ++;
+            page++;
             if (page > getAllItems(false).size() / 45) {
                 page = 0;
+            }
+        } else { // Player Inventory (Sell)
+
+            int newSlot = slot - 54;
+            if (clicked != null) {
+                if (ShopConfig.getConfigItemStack(plugin, clicked) != null) {
+                    double price = plugin.getConfig().getDouble(ShopConfig.getConfigItemStack(plugin, clicked) + ".price.sell");
+
+                    price *= clicked.getAmount();
+
+                    double coins = ShopConfig.getCoins(plugin, player);
+                    coins += price;
+                    plugin.getConfig().set("playerData." + player.getUniqueId() + ".coins", coins);
+
+                    player.sendMessage(ChatColor.WHITE + ItemMetaStack.getItemName(clicked) + ChatColor.GRAY + " (x" + clicked.getAmount() + ")" + ChatColor.GREEN + " was sold for " + ChatColor.GOLD + price + " coins");
+
+                    clicked.setAmount(0);
+
+                    plugin.saveConfig();
+                } else {
+                    player.sendMessage(ChatColor.RED + "This item cannot be sold!");
+                }
             }
         }
         refreshShopMenu(page);
