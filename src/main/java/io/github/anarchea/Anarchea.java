@@ -2,7 +2,8 @@ package main.java.io.github.anarchea;
 
 import main.java.io.github.anarchea.command.ShopAddCommand;
 import main.java.io.github.anarchea.command.ShopCommand;
-import main.java.io.github.anarchea.command.eco.Coins;
+import main.java.io.github.anarchea.command.eco.CoinsCommand;
+import main.java.io.github.anarchea.command.eco.PayCommand;
 import main.java.io.github.anarchea.shop.ShopGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -21,8 +22,9 @@ public class Anarchea extends JavaPlugin {
 
         getCommand("shop").setExecutor(new ShopCommand(this, shopGUI));
         getCommand("shopadd").setExecutor(new ShopAddCommand(this));
-        getCommand("coins").setExecutor(new Coins(this));
-        getCommand("c").setExecutor(new Coins(this));
+        getCommand("coins").setExecutor(new CoinsCommand(this));
+        getCommand("c").setExecutor(new CoinsCommand(this));
+        getCommand("pay").setExecutor(new PayCommand(this));
 
         this.saveDefaultConfig();
     }

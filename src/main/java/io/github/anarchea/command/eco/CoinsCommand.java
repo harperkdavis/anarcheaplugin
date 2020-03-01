@@ -9,11 +9,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class Coins implements CommandExecutor {
+public class CoinsCommand implements CommandExecutor {
 
     private JavaPlugin plugin;
 
-    public Coins(JavaPlugin plugin) {
+    public CoinsCommand(JavaPlugin plugin) {
         this.plugin = plugin;
     }
 
