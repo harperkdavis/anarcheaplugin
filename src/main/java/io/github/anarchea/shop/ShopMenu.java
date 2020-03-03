@@ -176,7 +176,7 @@ public class ShopMenu {
                 orderedItem.setAmount(Math.max(orderedItem.getMaxStackSize() / 2, 1));
             }
 
-            player.sendMessage(ChatColor.WHITE + ItemMetaStack.getItemName(orderedItem.clone()) + ChatColor.WHITE + " (x" + orderedItem.clone().getAmount() + ")" + ChatColor.GREEN + " was added to your Order");
+            player.sendMessage(ChatColor.WHITE + ItemMetaStack.getItemName(orderedItem.clone()) + ChatColor.WHITE + " (x" + orderedItem.clone().getAmount() + ")" + ChatColor.GREEN + " was added to your order");
         } else if (slot == 45) { // Previous Page
             if (page == 0) {
                 page = getAllItems(false).size() / 45;
@@ -186,7 +186,9 @@ public class ShopMenu {
         } else if (slot == 49) { // Order Delivery
             if (canOrderDelivery()) {
                 player.closeInventory();
-                new Delivery(orderList, player.getEyeLocation(), player).runTaskLater(plugin, deliveryTicks);
+                new Delivery(orderList, player.getEyeLocation(), player, "the shop").runTaskLater(plugin, deliveryTicks);
+                String deliveryTime = ((int) Math.floor(((float) deliveryTicks / 20) / 60) + "m" + (deliveryTicks / 20) % 60 + "s");
+                player.sendMessage(ChatColor.GREEN + "Ordered delivery! Your delivery will arrive in " + ChatColor.YELLOW + deliveryTime);
             } else {
                 player.sendMessage(ChatColor.RED + "Not enough coins!");
             }

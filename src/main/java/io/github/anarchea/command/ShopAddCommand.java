@@ -29,7 +29,7 @@ public class ShopAddCommand implements CommandExecutor {
                         String itemId = "ITEM_" + ("" + Math.random()).substring(2);
                         plugin.getConfig().set("shopItems." + itemId + ".price.buy", Double.parseDouble(args[0]));
                         plugin.getConfig().set("shopItems." + itemId + ".price.sell", Double.parseDouble(args[1]));
-                        plugin.getConfig().set("shopItems." + itemId + ".item", item);
+                        plugin.getConfig().set("shopItems." + itemId + ".item", item.clone());
                         plugin.saveConfig();
                         return true;
                     } else {

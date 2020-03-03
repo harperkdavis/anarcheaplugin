@@ -47,9 +47,8 @@ public class PayCommand implements CommandExecutor {
                 } else {
                     player.sendMessage(ChatColor.RED + "Invalid Player!");
                 }
-
             } else {
-                player.sendMessage(ChatColor.RED + "Incorrect arguments!");
+                player.sendMessage(ChatColor.RED + "Invalid arguments!");
             }
         }
         return false;
