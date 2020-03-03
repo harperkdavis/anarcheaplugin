@@ -27,12 +27,15 @@ public class ShopCommand implements CommandExecutor {
         if (sender instanceof Player) {
             Player player = (Player) sender;
 
-            Inventory gui = Bukkit.createInventory(player, 54, ChatColor.DARK_GRAY + "Shop");
+            if (plugin.getConfig().getBoolean("shopOnline")) {
+                Inventory gui = Bukkit.createInventory(player, 54, ChatColor.DARK_GRAY + "Shop");
 
-            shopGUI.playerShopInventories.put(player, new ShopMenu(plugin, gui, player));
+                shopGUI.playerShopInventories.put(player, new ShopMenu(plugin, gui, player));
 
-            player.openInventory(gui);
-
+                player.openInventory(gui);
+            } else {
+                player.sendMessage(ChatColor.RED + "The shop is temporarily down.");
+            }
             return true;
         }
 

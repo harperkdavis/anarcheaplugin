@@ -1,5 +1,6 @@
 package main.java.io.github.anarchea.shop;
 
+import main.java.io.github.anarchea.Anarchea;
 import main.java.io.github.anarchea.utils.ItemMetaStack;
 import main.java.io.github.anarchea.utils.ShopConfig;
 import org.bukkit.Bukkit;
@@ -96,7 +97,7 @@ public class ShopMenu {
     private double totalOrderPrice() {
         double totalPrice = 0;
         for (ItemStack is : orderList) {
-            totalPrice += plugin.getConfig().getDouble(ShopConfig.getConfigItemStack(plugin, is) + ".price.buy") * is.getAmount();
+            totalPrice += plugin.getConfig().getDouble(ShopConfig.getConfigItemStack(plugin, is) + ".price.buy") * is.getAmount() * Anarchea.shopMultiplier;
         }
         totalPrice += 10;
         return totalPrice;
@@ -116,7 +117,7 @@ public class ShopMenu {
 
                     List<String> lore = new ArrayList<>();
                     lore.add(ChatColor.BLACK + " ");
-                    lore.add(ChatColor.GOLD + "Buy: " + ChatColor.WHITE + plugin.getConfig().get("shopItems." + k + ".price.buy") + " coins");
+                    lore.add(ChatColor.GOLD + "Buy: " + ChatColor.WHITE + (plugin.getConfig().getDouble("shopItems." + k + ".price.buy") * Anarchea.shopMultiplier) + " coins");
                     lore.add(ChatColor.GOLD + "Sell: " + ChatColor.WHITE + plugin.getConfig().get("shopItems." + k + ".price.sell") + " coins");
 
                     ItemMeta im = is.getItemMeta();
@@ -138,7 +139,7 @@ public class ShopMenu {
         gui.clear();
         List<ItemStack> items = getAllItems(true);
         for (int i = 45 * page; i < Math.min(getAllItems(true).size(), 45 + 45 * page); i++) {
-            gui.setItem(i, getAllItems(true).get(i));
+            gui.setItem(i % 45, getAllItems(true).get(i));
         }
         loadBottomBar();
     }
@@ -189,6 +190,9 @@ public class ShopMenu {
                 new Delivery(orderList, player.getEyeLocation(), player, "the shop").runTaskLater(plugin, deliveryTicks);
                 String deliveryTime = ((int) Math.floor(((float) deliveryTicks / 20) / 60) + "m" + (deliveryTicks / 20) % 60 + "s");
                 player.sendMessage(ChatColor.GREEN + "Ordered delivery! Your delivery will arrive in " + ChatColor.YELLOW + deliveryTime);
+
+                ShopConfig.setCoins(plugin, player, ShopConfig.getCoins(plugin, player) - totalOrderPrice());
+                plugin.saveConfig();
             } else {
                 player.sendMessage(ChatColor.RED + "Not enough coins!");
             }

@@ -32,7 +32,7 @@ public class EventManager implements Listener {
             e.setJoinMessage(ChatColor.YELLOW + "Welcome " + e.getPlayer().getName() + " to the server!");
 
             // Create player in config.yml
-            plugin.getConfig().set("playerData." + e.getPlayer().getUniqueId() + ".coins", 500);
+            plugin.getConfig().set("playerData." + e.getPlayer().getUniqueId() + ".coins", 10);
 
             e.getPlayer().getInventory().addItem(new ItemStack(Material.RED_BED, 1));
             e.getPlayer().getInventory().addItem(new ItemStack(Material.ENDER_CHEST, 1));

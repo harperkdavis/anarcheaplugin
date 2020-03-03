@@ -13,6 +13,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Anarchea extends JavaPlugin {
 
+    public static double shopMultiplier = 2;
+
     @Override
     public void onEnable() {
         Bukkit.getServer().getPluginManager().registerEvents(new EventManager(this), this);
