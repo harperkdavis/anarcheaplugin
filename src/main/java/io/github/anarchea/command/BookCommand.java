@@ -51,24 +51,20 @@ public class BookCommand implements CommandExecutor {
 
                 if (args[0].equalsIgnoreCase("TREATY")) {
                     bookText.add(ChatColor.GREEN + (ChatColor.BOLD + "TREATY"));
-                    writtenBook.getItemMeta().setDisplayName(ChatColor.GREEN + (ChatColor.BOLD + "TREATY (" + player.getName() + ")"));
                 } else if (args[0].equalsIgnoreCase("SANCTION")) {
                     bookText.add(ChatColor.RED + (ChatColor.BOLD + "SANCTION"));
-                    writtenBook.getItemMeta().setDisplayName(ChatColor.RED + (ChatColor.BOLD + "SANCTION (" + player.getName() + ")"));
                 } else if (args[0].equalsIgnoreCase("ULTIMATUM")) {
                     bookText.add(ChatColor.DARK_RED + (ChatColor.BOLD + "ULTIMATUM"));
-                    writtenBook.getItemMeta().setDisplayName(ChatColor.DARK_RED + (ChatColor.BOLD + "ULTIMATUM (" + player.getName() + ")"));
                 } else if (args[0].equalsIgnoreCase("MANDATE")) {
                     bookText.add(ChatColor.GOLD + (ChatColor.BOLD + "MANDATE"));
-                    writtenBook.getItemMeta().setDisplayName(ChatColor.GOLD + (ChatColor.BOLD + "MANDATE (" + player.getName() + ")"));
                 } else if (args[0].equalsIgnoreCase("DECREE")) {
                     bookText.add(ChatColor.BLUE + (ChatColor.BOLD + "DECREE"));
-                    writtenBook.getItemMeta().setDisplayName(ChatColor.BLUE + (ChatColor.BOLD + "DECREE (" + player.getName() + ")"));
                 } else if (args[0].equalsIgnoreCase("WAR")) {
                     bookText.add(ChatColor.DARK_GREEN + (ChatColor.BOLD + "DECLARATION \n" + ChatColor.DARK_GREEN + "OF WAR"));
-                    writtenBook.getItemMeta().setDisplayName(ChatColor.DARK_GREEN + (ChatColor.BOLD + "DECLARATION OF WAR (" + player.getName() + ")"));
-                } else {
-                    player.sendMessage(ChatColor.RED + "Your book must be: TREATY, SANCTION, ULTIMATUM, MANDATE, DECREE, or WAR. Leave blank for blank book");
+                } else if (args[0].equalsIgnoreCase("ARMISTICE")) {
+                    bookText.add(ChatColor.DARK_PURPLE + (ChatColor.BOLD + "ARMISTICE"));
+                }else {
+                    player.sendMessage(ChatColor.RED + "Your book must be: TREATY, SANCTION, ULTIMATUM, MANDATE, DECREE, ARMISTICE, or WAR. Leave blank for blank book");
                     return false;
                 }
 

@@ -29,7 +29,8 @@ public class ShopConfig {
     }
 
     public static void setCoins(JavaPlugin plugin, Player player, double coins) {
-        plugin.getConfig().set("playerData." + player.getUniqueId() + ".coins", (double) Math.round(coins * 10) / 10);
+        double roundedValue =  (double) ((int)(coins * 10)) / 10;
+        plugin.getConfig().set("playerData." + player.getUniqueId() + ".coins", roundedValue);
         plugin.saveConfig();
     }
 

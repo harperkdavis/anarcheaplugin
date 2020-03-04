@@ -8,6 +8,7 @@ import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -69,5 +70,13 @@ public class EventManager implements Listener {
         e.setAmount((int) (e.getAmount() * 1.5));
     }
 
+    @EventHandler
+    public void breakBlock(BlockBreakEvent e) {
+        if (e.getBlock().getType() == Material.SPAWNER) {
+            e.getPlayer().getInventory().addItem(new ItemStack(Material.SPAWNER, 1));
+            e.setExpToDrop(0);
+            e.getPlayer().sendMessage(ChatColor.GREEN + "You have harvested a spawner!");
+        }
+    }
 
 }
